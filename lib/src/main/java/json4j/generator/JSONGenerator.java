@@ -13,7 +13,7 @@ public class JSONGenerator {
 		super();
 	}
 	
-	public void write(JSONObject obj, File file) {
+	public void write(JSONObject obj, File file, boolean append) {
 		if (file.isDirectory()) {
 			throw new IllegalArgumentException("File can't be a directory.");
 		}
@@ -22,7 +22,8 @@ public class JSONGenerator {
 			file.createNewFile();
 			
 			Files.write(Path.of(file.getAbsolutePath()),
-					obj.toString().getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+					obj.toString().getBytes(), append ?
+					StandardOpenOption.APPEND : StandardOpenOption.TRUNCATE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

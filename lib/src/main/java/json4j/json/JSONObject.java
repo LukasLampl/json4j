@@ -36,7 +36,9 @@ public class JSONObject {
 			
 			final String valueStr;
 			
-			if (value instanceof Integer) {
+			if (value == null) {
+				valueStr = "null";
+			} else if (value instanceof Integer) {
 				valueStr = String.valueOf(Integer.parseInt(entry.getValue().toString()));
 			} else if (value instanceof Double) {
 				valueStr = getFloatingpointValue(((Double)value));
