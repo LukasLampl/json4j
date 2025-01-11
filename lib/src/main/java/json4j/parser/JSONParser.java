@@ -1,8 +1,6 @@
 package json4j.parser;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import json4j.json.JSONArray;
 import json4j.json.JSONObject;
 
 public class JSONParser {
@@ -59,7 +57,7 @@ public class JSONParser {
 				throw new IllegalArgumentException("Expected string key at index " + index);
 			}
 
-			Report keyReport = parseString(str, index);
+			Report keyReport = parseString(str, index);//, true);
 			String key = (String) keyReport.getObject();
 			index = skipWhitespace(str, keyReport.getLastStop());
 
@@ -91,7 +89,7 @@ public class JSONParser {
 		} else if (str.charAt(index) == '[') {
 			return parseArray(str, index);
 		} else if (str.charAt(index) == '"') {
-			return parseString(str, index);
+			return parseString(str, index);//, false);
 		} else if (str.startsWith("true", index)) {
 			return new Report(index + 4, Boolean.TRUE);
 		} else if (str.startsWith("false", index)) {
@@ -110,16 +108,16 @@ public class JSONParser {
 			throw new IllegalStateException("Expected '[' but got '" + str.charAt(index) + "' at index " + index);
 		}
 
-		List<Object> values = new ArrayList<>();
+		JSONArray array = new JSONArray();
 		index = skipWhitespace(str, index + 1);
 
 		while (index < str.length()) {
 			if (str.charAt(index) == ']') {
-				return new Report(index + 1, convertToAccordingArray(values));
+				return new Report(index + 1, array);
 			}
 
 			Report valueReport = getValue(str, index);
-			values.add(valueReport.getObject());
+			array.add(valueReport.getObject());
 			index = skipWhitespace(str, valueReport.getLastStop());
 
 			if (str.charAt(index) == ',') {
@@ -158,62 +156,57 @@ public class JSONParser {
 
 		StringBuilder value = new StringBuilder();
 		index++;
-
 		while (index < str.length()) {
-			char current = str.charAt(index);
-			if (current == '"' && (index == 0 || str.charAt(index - 1) != '\\')) {
-				break;
-			}
-			if (current == '\\' && index + 1 < str.length()) {
-				char next = str.charAt(index + 1);
-				switch (next) {
-				case 'n':
-					value.append('\n');
-					break;
-				case 't':
-					value.append('\t');
-					break;
-				case 'r':
-					value.append('\r');
+			char current = str.charAt(index++);
+			if (current == '\\') {
+				if (index >= str.length()) {
+					throw new IllegalArgumentException("Unterminated escape sequence");
+				}
+				char escaped = str.charAt(index++);
+				switch (escaped) {
+				case '"':
+					value.append('"');
 					break;
 				case '\\':
 					value.append('\\');
 					break;
-				case '"':
-					value.append('"');
+				case '/':
+					value.append('/');
+					break;
+				case 'b':
+					value.append('\b');
+					break;
+				case 'f':
+					value.append('\f');
+					break;
+				case 'n':
+					value.append('\n');
+					break;
+				case 'r':
+					value.append('\r');
+					break;
+				case 't':
+					value.append('\t');
+					break;
+				case 'u':
+					if (index + 4 > str.length()) {
+						throw new IllegalArgumentException("Invalid Unicode escape sequence");
+					}
+					String hex = str.substring(index, index + 4);
+					value.append((char) Integer.parseInt(hex, 16));
+					index += 4;
 					break;
 				default:
-					value.append(next);
+					throw new IllegalArgumentException("Invalid escape character: " + escaped);
 				}
-				index++; // Skip the escaped character
+			} else if (current == '"') {
+				break;
 			} else {
 				value.append(current);
 			}
-			index++;
 		}
 
-		if (index >= str.length() || str.charAt(index) != '"') {
-			throw new IllegalArgumentException("Unterminated string starting at index " + index);
-		}
-
-		return new Report(index + 1, value.toString());
+		return new Report(index, (String)value.toString());
 	}
-	
-	private Object convertToAccordingArray(List<Object> objs) {
-		Object[] array;
-		
-		if (objs.getFirst() instanceof JSONObject) {
-			array = new JSONObject[objs.size()];
-		} else {
-			array = new Object[objs.size()];
-		}
-		
-		int index = 0;
 
-		for (Object obj : objs) {
-			array[index++] = obj;
-		}
-		
-		return array;
-	}
 }
