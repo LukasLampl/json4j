@@ -69,15 +69,17 @@ public abstract class JSONEncoder {
 		builder.append("[\n");
 		int counter = 0;
 		
-		for (Object obj : jsonObjs.getArray()) {
-			if (obj == null) {
-				continue;
-			}
-			
-			content.append(getIdentString(getValueString(obj)));
-			
-			if ((++counter) < jsonObjs.length()) {
-				content.append(",\n");
+		if (jsonObjs.length() > 0) {
+			for (Object obj : jsonObjs.getArray()) {
+				if (obj == null) {
+					continue;
+				}
+				
+				content.append(getIdentString(getValueString(obj)));
+				
+				if ((++counter) < jsonObjs.length()) {
+					content.append(",\n");
+				}
 			}
 		}
 		

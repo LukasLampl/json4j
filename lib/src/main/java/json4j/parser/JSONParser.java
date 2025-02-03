@@ -32,7 +32,7 @@ public class JSONParser {
 			throw new IllegalArgumentException("Invalid JSON object format");
 		}
 
-		return (JSONObject) parseObject(str, index).getObject();
+		return (JSONObject)parseObject(str, index).getObject();
 	}
 
 	private int skipWhitespace(String str, int index) {
