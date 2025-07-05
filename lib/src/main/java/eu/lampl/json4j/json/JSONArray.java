@@ -35,7 +35,7 @@ import java.util.List;
  * @author Lukas Lampl
  * @since 1.0.0
  */
-public class JSONArray {
+public class JSONArray extends JSONEncoder {
 	/**
 	 * Holds the raw objects of the {@code JSONArray}.
 	 */
@@ -89,5 +89,10 @@ public class JSONArray {
 	 */
 	public int length() {
 		return this.array.size();
+	}
+	
+	@Override
+	public String toString() {
+		return super.JSONObjectArrayToString(this);
 	}
 }

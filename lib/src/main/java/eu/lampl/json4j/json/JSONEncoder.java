@@ -39,7 +39,7 @@ public abstract class JSONEncoder {
 	 * @param map	Map of the {@code JSONObject} to translate.
 	 * @return A string representation of the {@code JSONObject's} map.
 	 */
-	public String toString(final Map<String, Object> map) {
+	protected String toString(final Map<String, Object> map) {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("{\n");
 		int counter = 0;
@@ -96,7 +96,7 @@ public abstract class JSONEncoder {
 		} else if (value instanceof JSONObject) {
 			valueStr = getIdentString(((JSONObject)value).toString());
 		} else if (value instanceof JSONArray) {
-			valueStr = handleJSONObjectArray((JSONArray)value);
+			valueStr = JSONObjectArrayToString((JSONArray)value);
 		} else {
 			valueStr = "\"" + value.toString() + "\"";
 		}
@@ -127,7 +127,7 @@ public abstract class JSONEncoder {
 	 * @param jsonObjs	The {@code JSONArray} to translate.
 	 * @return A string representation of the given {@code JSONArray}.
 	 */
-	private String handleJSONObjectArray(final JSONArray jsonObjs) {
+	protected String JSONObjectArrayToString(final JSONArray jsonObjs) {
 		final StringBuilder builder = new StringBuilder();
 		final StringBuilder content = new StringBuilder();
 		builder.append("[\n");
