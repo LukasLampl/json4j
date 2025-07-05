@@ -36,3 +36,15 @@ tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+tasks.named<Jar>("jar") {
+    manifest {
+       attributes(
+           "Implementation-Title" to "json4j",
+           "Implementation-Version" to "1.0.0"
+       )
+    }
+
+    archiveVersion.set("1.0.0")
+    archiveBaseName.set("json4j")
+}
