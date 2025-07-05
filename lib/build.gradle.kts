@@ -41,10 +41,10 @@ tasks.named<Jar>("jar") {
     manifest {
        attributes(
            "Implementation-Title" to "json4j",
-           "Implementation-Version" to "1.0.0"
+           "Implementation-Version" to "1.0.2"
        )
     }
 
-    archiveVersion.set("1.0.0")
+    archiveVersion.set("1.0.2")
     archiveBaseName.set("json4j")
 }

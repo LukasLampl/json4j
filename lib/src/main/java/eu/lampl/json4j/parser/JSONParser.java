@@ -44,7 +44,7 @@ public class JSONParser {
 		}
 	}
 
-	public JSONObject parse(String str) {
+	public JSONObject parseJSONObject(final String str) {
 		if (str == null || str.isEmpty()) {
 			throw new IllegalArgumentException("Input string cannot be null or empty");
 		}
@@ -55,6 +55,19 @@ public class JSONParser {
 		}
 
 		return (JSONObject)parseObject(str, index).getObject();
+	}
+	
+	public JSONArray parseJSONArray(final String str) {
+		if (str == null || str.isEmpty()) {
+			throw new IllegalArgumentException("Input string cannot be null or empty");
+		}
+
+		int index = skipWhitespace(str, 0);
+		if (str.charAt(index) != '[' || str.charAt(str.length() - 1) != ']') {
+			throw new IllegalArgumentException("Invalid JSON array format");
+		}
+
+		return (JSONArray)parseArray(str, index).getObject();
 	}
 
 	private int skipWhitespace(String str, int index) {
