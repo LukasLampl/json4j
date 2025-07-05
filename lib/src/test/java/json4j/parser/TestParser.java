@@ -2,7 +2,8 @@ package json4j.parser;
 
 import org.junit.jupiter.api.Test;
 
-import json4j.json.JSONObject;
+import eu.lampl.json4j.json.JSONObject;
+import eu.lampl.json4j.parser.JSONParser;
 
 public class TestParser {
 	@Test
